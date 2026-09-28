@@ -1,0 +1,24 @@
+
+# OK
+
+## Identificación y Análisis de Atributos de Calidad
+
+| Atributo de Calidad | Definición aplicada al módulo |
+|---|---|
+| **Disponibilidad** | Capacidad del módulo de Despachos y Reportes para mantenerse operativo, recibir notificaciones de pedidos pagados sin pérdida de datos en almacén y recuperar el procesamiento ante fallos de conexión o reinicios del sistema. |
+| **Rendimiento** | Capacidad del módulo para procesar el registro de empaques, salidas y entregas, así como ejecutar consultas y reportes analíticos consolidados sobre grandes volúmenes de datos históricos dentro de los tiempos de respuesta establecidos. |
+| **Seguridad** | Capacidad del módulo para proteger la información confidencial de entregas, direcciones de clientes y reportes de ingresos financieros, asegurando que solo personal autorizado (como Administradores o Almaceneros) acceda o ejecute operaciones específicas según su rol. |
+| **Usabilidad** | Capacidad del módulo para permitir que los almaceneros registren despachos, confirmen entregas y consulten el historial de forma clara, ágil e intuitiva, previniendo errores en la secuencia de estados de envío. |
+| **Mantenibilidad** | Capacidad del módulo para facilitar la incorporación de nuevas vistas de reportes analíticos o la integración con nuevas agencias de transporte, limitando el impacto sobre los módulos de ventas y clientes, y conservando la independencia de sus vistas de solo lectura. |
+| **Escalabilidad** | Capacidad del módulo para soportar el incremento en el volumen de notificaciones de pedidos pagados, registros de despachos y consultas analíticas simultáneas durante picos de alta demanda, manteniendo los niveles de servicio establecidos. |
+
+## Parte 2: Especificación mediante Escenarios de Calidad
+
+| Atributo de Calidad | Fuente del Estímulo | Estímulo | Artefacto | Entorno | Respuesta | Medida de Respuesta |
+|---|---|---|---|---|---|---|
+| **Disponibilidad** | Módulo de Ventas y Pagos | Emisión de la notificación del evento "PedidoPagado" | Servicio receptor de eventos y cola logística del Módulo 3 | Operación en hora pico, durante un reinicio breve de red del servidor de almacén | El sistema conserva el mensaje en cola, recupera la conexión, verifica no duplicar el registro y encola la orden en estado "PENDIENTE_PREPARACION" | Pérdida de notificaciones = 0%; la orden ingresa a la bandeja del almacén en menos de 30 segundos tras restablecer el servicio |
+| **Rendimiento** | Administrador | Solicitud de generación del "Reporte de Ventas Consolidado" abarcando más de 50,000 registros | Submódulo de Reportes e Indicadores ("v_reporte_ventas") | Operación simultánea en hora pico de ventas y almacén | El sistema ejecuta la consulta sobre la vista de solo lectura sin bloquear las tablas de pedidos y pagos transaccionales | El reporte se despliega en pantalla en menos de 3 segundos sin alentar los registros del almacén |
+| **Seguridad** | Vendedor o Almacenero | Intento de acceder al reporte consolidado de ingresos por ventas desde la interfaz | Control de acceso y autorización del Módulo de Reportes | Operación normal con sesión activa sin rol "Administrador" | El sistema verifica los permisos del usuario, deniega el acceso a la vista y muestra un mensaje de restricción | 100% de los accesos no autorizados son bloqueados; el mensaje de denegación responde en menos de 100 ms |
+| **Usabilidad** | Almacenero | Intento de marcar un pedido como "ENTREGADO" habiendo olvidado registrar su paso previo por "DESPACHADO" | Servicio de validación de secuencia de entregas ("CU-DES-06") | Operación diaria en almacén | El sistema detiene la acción, impide el cambio de estado arbitrario y muestra una alerta explicando que primero debe registrarse como "DESPACHADO" | 100% de los intentos desordenados son detenidos, mostrando el mensaje descriptivo en pantalla de forma inmediata |
+| **Mantenibilidad** | Equipo de desarrollo | Solicitud para modificar la estructura de la tabla de facturación en el Módulo de Ventas | Vistas analíticas del Submódulo de Reportes | Mantenimiento / Actualización del sistema | Las vistas de solo lectura absorben el cambio adaptando las columnas de consulta sin requerir modificaciones en la API de Despachos | Cero líneas de código alteradas en el servicio de despachos; las vistas SQL se actualizan en menos de 30 minutos |
+| **Escalabilidad** | Sistema de Ventas | Incremento del tráfico de notificaciones por un pico de 300 pedidos pagados simultáneos durante una campaña promocional | Cola de recepción de eventos del Módulo 3 ("CU-DES-01") | Campaña promocional de alta demanda | El servicio encola las notificaciones entrantes y las procesa de manera ordenada sin saturar el servidor ni colapsar la pantalla del almacén | El 100% de los pedidos son recibidos e ingresados a la lista de trabajo en un tiempo promedio inferior a 2 segundos por pedido |
