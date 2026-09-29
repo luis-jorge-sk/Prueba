@@ -6,6 +6,7 @@
 **Tema individual:** API Management
 
 ---
+![](https://github.com/luis-jorge-sk/Prueba/blob/b2da6b09b9e70c5be601e8b45d5914d62b27fa81/pc1/imagenes/API-management-DataScientest.webp)
 
 # Desarrollo conceptual
 
@@ -81,12 +82,12 @@ Para probar cualquier API gestionada por el Gateway es necesaria una herramienta
 
 Postman permite validar de forma controlada cada política aplicada en el Gateway (autenticación, límite de tráfico) antes de integrar el flujo con un canal real como WhatsApp.
 
-## Herramienta de exposición local: ngrok
+## ngrok
 
 Como Kong Konnect es un servicio en la nube, no puede acceder directamente a un backend corriendo en `localhost`. **ngrok** es una herramienta que crea un túnel público temporal hacia un puerto local, permitiendo que un servicio en la nube alcance una aplicación que corre en la propia máquina.
 
 **Instalación y registro:**
-1. Descargar desde `https://ngrok.com/download`
+1. Descargar desde [https://ngrok.com/download] (https://ngrok.com/download)
 2. Crear una cuenta gratuita en `https://ngrok.com`
 3. Copiar el **authtoken** personal desde `https://dashboard.ngrok.com/get-started/your-authtoken`
 4. Configurar el token localmente:
@@ -97,14 +98,6 @@ Como Kong Konnect es un servicio en la nube, no puede acceder directamente a un 
 
 Con esto, ngrok queda listo para exponer cualquier puerto local a internet cuando se necesite .
 
-## Trade-offs identificados
-
-| Ventaja | Costo / Limitación |
-|---|---|
-| Seguridad centralizada (el ERP nunca se expone directamente) | Añade un punto de red adicional (latencia extra, aunque mínima) |
-| Monitoreo y control de tráfico out-of-the-box | Curva de aprendizaje para configurar plugins y rutas correctamente |
-| Escalable a múltiples canales (WhatsApp, app móvil, web) | Dependencia de un proveedor externo (Kong Konnect) si se usa la versión cloud |
-| No requiere modificar el código del ERP para añadir seguridad | En el plan gratuito, límites de uso (aceptable solo para demos/pruebas) |
 
 ---
 
@@ -118,7 +111,7 @@ Se simula el flujo en el que un cliente escribe por WhatsApp "¿Cuál es el esta
 [Cliente WhatsApp] → [Kong Konnect Gateway] → [ngrok] → [ERP Mock (Flask/Python)]
 ```
 
-### 3.2 Backend del ERP (módulo Despachos y Reportes)
+## Backend del ERP (módulo Despachos y Reportes)
 
 Se implementó un servicio mínimo en **Python (Flask)** con dos endpoints relevantes al módulo:
 
