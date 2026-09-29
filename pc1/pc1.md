@@ -7,15 +7,15 @@
 
 ---
 
-## 1. Desarrollo conceptual
+# Desarrollo conceptual
 
-### 1.1 ¿Qué es API Management?
+## API Management
 
 **API Management** (Gestión de APIs) es el conjunto de prácticas, herramientas y procesos que permiten diseñar, publicar, documentar, proteger, monitorear y analizar el uso de las APIs de una organización. Su objetivo es actuar como una capa intermedia entre los consumidores de una API (aplicaciones, bots, usuarios externos) y los servicios backend que realmente procesan la información.
 
 Este concepto es independiente de cualquier proveedor de nube o tecnología específica: puede implementarse con herramientas open-source instaladas localmente, como servicio administrado en la nube, o como una combinación de ambos (modelo híbrido).
 
-### 1.2 Componentes principales
+## Componentes principales
 
 | Componente | Función |
 |---|---|
@@ -25,7 +25,7 @@ Este concepto es independiente de cualquier proveedor de nube o tecnología espe
 | **Monitoreo y analítica** | Registra métricas de uso: número de llamadas, latencia, errores, patrones de consumo |
 | **Gestión de versiones** | Permite mantener múltiples versiones de una misma API sin romper integraciones existentes |
 
-### 1.3 ¿Por qué es relevante para un ERP de ventas por WhatsApp?
+##  Componentes principales para un ERP de ventas por WhatsApp
 
 En el escenario grupal, el módulo de **Despachos y Reportes** no es consumido por un solo canal: puede recibir solicitudes desde el bot de WhatsApp, una aplicación móvil de repartidores, un dashboard web administrativo, o incluso sistemas de terceros (transportistas, facturación electrónica). Sin una capa de gestión de APIs, cada uno de estos consumidores tendría que conectarse directamente al ERP, generando:
 
@@ -35,7 +35,7 @@ En el escenario grupal, el módulo de **Despachos y Reportes** no es consumido p
 
 API Management resuelve esto introduciendo un **Gateway** como intermediario único, que autentica, controla y monitorea todo el tráfico antes de que llegue al ERP.
 
-### 1.4 Patrones conceptuales relacionados
+## Patrones conceptuales relacionados
 
 - **Backend for Frontend (BFF):** el gateway puede adaptar la respuesta del ERP al formato que espera cada canal (ej. un mensaje de texto simple para WhatsApp vs. un JSON estructurado para el dashboard).
 - **Rate Limiting / Throttling:** evita que un canal (o un uso malicioso del bot) sature el ERP con peticiones excesivas.
@@ -43,15 +43,15 @@ API Management resuelve esto introduciendo un **Gateway** como intermediario ún
 
 ---
 
-## 2. Consideraciones técnicas
+# Consideraciones técnicas
 
 Para la demo se utilizó **Kong**, una de las herramientas de API Management más adoptadas en la industria, en su variante **Kong Konnect** (SaaS / servicio en la nube), dado que la virtualización local (Docker) no estaba disponible en el entorno de prueba.
 
-### 2.1 Herramienta seleccionada: Kong Konnect
+## Kong Konnect
 
 Kong Konnect es la plataforma en la nube de Kong que permite gestionar Gateways sin necesidad de infraestructura propia. Ofrece un plan gratuito (tier *Serverless*) suficiente para fines académicos y de demostración.
 
-### 2.2 Paso a paso: creación de cuenta y configuración base
+## Paso a paso: creación de cuenta y configuración base
 
 **Paso 1 — Crear la cuenta en Kong Konnect**
 1. Ingresar a `https://konghq.com/products/kong-konnect`
@@ -66,7 +66,7 @@ Kong Konnect es la plataforma en la nube de Kong que permite gestionar Gateways 
 
 Con esto queda disponible un Gateway en la nube, listo para configurarse con los servicios, rutas y políticas específicas de cualquier proyecto (la configuración particular del escenario de despachos se detalla en la sección de Demo).
 
-### 2.3 Herramienta de prueba: Postman
+## Postman
 
 Para probar cualquier API gestionada por el Gateway es necesaria una herramienta de cliente HTTP. Se utilizó **Postman** por ser gratuita y ampliamente usada en la industria.
 
@@ -81,7 +81,7 @@ Para probar cualquier API gestionada por el Gateway es necesaria una herramienta
 
 Postman permite validar de forma controlada cada política aplicada en el Gateway (autenticación, límite de tráfico) antes de integrar el flujo con un canal real como WhatsApp.
 
-### 2.4 Herramienta de exposición local: ngrok
+## Herramienta de exposición local: ngrok
 
 Como Kong Konnect es un servicio en la nube, no puede acceder directamente a un backend corriendo en `localhost`. **ngrok** es una herramienta que crea un túnel público temporal hacia un puerto local, permitiendo que un servicio en la nube alcance una aplicación que corre en la propia máquina.
 
@@ -90,13 +90,14 @@ Como Kong Konnect es un servicio en la nube, no puede acceder directamente a un 
 2. Crear una cuenta gratuita en `https://ngrok.com`
 3. Copiar el **authtoken** personal desde `https://dashboard.ngrok.com/get-started/your-authtoken`
 4. Configurar el token localmente:
+
    ```
    ngrok config add-authtoken TU_TOKEN
    ```
 
-Con esto, ngrok queda listo para exponer cualquier puerto local a internet cuando se necesite (el uso específico para este escenario, apuntando al ERP mock, se detalla en la sección de Demo).
+Con esto, ngrok queda listo para exponer cualquier puerto local a internet cuando se necesite .
 
-### 2.3 Trade-offs identificados
+## Trade-offs identificados
 
 | Ventaja | Costo / Limitación |
 |---|---|
@@ -107,11 +108,11 @@ Con esto, ngrok queda listo para exponer cualquier puerto local a internet cuand
 
 ---
 
-## 3. Demo (código)
+# Demo 
 
-### 3.1 Escenario de aplicación
+## Escenario de aplicación
 
-Se simula el flujo en el que un cliente escribe por WhatsApp *"¿Cuál es el estado de mi pedido #123?"*, y esa solicitud, en lugar de llegar directo al ERP, pasa primero por el API Gateway (Kong Konnect), que valida la autenticación, aplica límite de tráfico y registra la petición antes de reenviarla al módulo de despachos del ERP.
+Se simula el flujo en el que un cliente escribe por WhatsApp "¿Cuál es el estado de mi pedido#123?", y esa solicitud, en lugar de llegar directo al ERP, pasa primero por el API Gateway (Kong Konnect), que valida la autenticación, aplica límite de tráfico y registra la petición antes de reenviarla al módulo de despachos del ERP.
 
 ```
 [Cliente WhatsApp] → [Kong Konnect Gateway] → [ngrok] → [ERP Mock (Flask/Python)]
@@ -159,9 +160,9 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=4000)
 ```
 
-### 3.3 Exponer el backend local a internet (uso específico de ngrok)
+## Exponer el backend local a internet (uso de ngrok)
 
-Con ngrok ya instalado y configurado (ver sección 2.4), se levantó el túnel apuntando al puerto donde corre el ERP mock:
+Con ngrok ya instalado y configurado (sección 2.4), se levantó el túnel apuntando al puerto donde corre el ERP mock:
 
 ```
 ngrok http 4000
@@ -169,9 +170,8 @@ ngrok http 4000
 
 Esto generó una URL pública (ej. `https://abc123.ngrok-free.app`) que redirige el tráfico entrante hacia `localhost:4000`, donde corre el Flask del ERP.
 
-> **Nota:** en un entorno de producción real, el ERP estaría desplegado en un servidor con URL pública fija, eliminando la necesidad de ngrok — esta herramienta se usa únicamente para fines de demostración local.
 
-### 3.4 Configuración específica del Gateway para el escenario
+## Configuración específica del Gateway para el escenario
 
 Dentro del Control Plane creado en la sección 2.2, se configuró:
 
@@ -191,7 +191,7 @@ Dentro del Control Plane creado en la sección 2.2, se configuró:
 - Username: `whatsapp-bot` (representa al canal de WhatsApp como cliente autorizado)
 - Credencial generada en **Credentials → Key Auth**, usada como valor del header `apikey`
 
-### 3.5 Pruebas realizadas (Postman)
+## Pruebas realizadas (Postman)
 
 | Prueba | Petición | Resultado esperado | Resultado obtenido |
 |---|---|---|---|
@@ -204,14 +204,4 @@ Estas pruebas confirman que el Gateway cumple las tres funciones clave de API Ma
 
 ---
 
-## 4. Conclusiones
 
-La incorporación de una capa de **API Management** en el módulo de Despachos y Reportes del ERP permite desacoplar el canal de comunicación (WhatsApp) del sistema backend, centralizando aspectos críticos como la seguridad, el control de tráfico y el monitoreo. Independientemente de la tecnología del backend (en este caso Python/Flask, aunque podría ser Node.js, Java u otro lenguaje), el Gateway actúa como una capa uniforme que estandariza cómo se accede a los servicios del ERP, facilitando además la incorporación de nuevos canales o consumidores a futuro sin modificar el código del sistema principal.
-
----
-
-## 5. Referencias
-
-- Kong Inc. — Documentación oficial de Kong Konnect: https://docs.konghq.com/konnect/
-- Kong Inc. — Documentación de plugins (Key Authentication, Rate Limiting): https://docs.konghq.com/hub/
-- ngrok — Documentación oficial: https://ngrok.com/docs
