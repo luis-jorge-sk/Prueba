@@ -87,7 +87,7 @@ Postman permite validar de forma controlada cada política aplicada en el Gatewa
 Como Kong Konnect es un servicio en la nube, no puede acceder directamente a un backend corriendo en `localhost`. **ngrok** es una herramienta que crea un túnel público temporal hacia un puerto local, permitiendo que un servicio en la nube alcance una aplicación que corre en la propia máquina.
 
 **Instalación y registro:**
-1. Descargar desde [https://ngrok.com/download] (https://ngrok.com/download)
+1. Descargar desde [https://ngrok.com/download](https://ngrok.com/download)
 2. Crear una cuenta gratuita en `https://ngrok.com`
 3. Copiar el **authtoken** personal desde `https://dashboard.ngrok.com/get-started/your-authtoken`
 4. Configurar el token localmente:
