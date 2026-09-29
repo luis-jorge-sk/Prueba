@@ -4,6 +4,17 @@
 **Tema grupal:** Sistema ERP para gestión de ventas mediante WhatsApp
 **Módulo de enfoque:** Despachos y Reportes
 **Tema individual:** API Management
+> ### Videos PC1
+>
+> **Video Tema Individual:**
+>
+> [![Video_Individual_Diseno](https://img.youtube.com/vi/Pcb4JyypmzA/maxresdefault.jpg)](https://youtu.be/Pcb4JyypmzA)
+
+>
+> **Video Aporte al Proyecto Grupal:**
+>
+> [![Video_Aporte_grupal](https://img.youtube.com/vi/edKTtDmS37Q/maxresdefault.jpg)](https://youtu.be/edKTtDmS37Q)
+
 
 ---
 ![](https://github.com/luis-jorge-sk/Prueba/blob/b2da6b09b9e70c5be601e8b45d5914d62b27fa81/pc1/imagenes/API-management-DataScientest.webp)
